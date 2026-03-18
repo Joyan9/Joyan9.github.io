@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Joyan Bhathena · Data Analyst</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #080b10;
+      --bg2:       #0e1219;
+      --bg3:       #141921;
+      --border:    rgba(0, 230, 180, 0.12);
+      --accent:    #00e6b4;
+      --accent2:   #00aaff;
+      --muted:     #4a5568;
+      --text:      #c9d4e0;
+      --text-dim:  #6b7a90;
+      --heading:   #eef2f8;
+      --mono:      'IBM Plex Mono', monospace;
+      --sans:      'Syne', sans-serif;
+      --radius:    6px;
+      --glow:      0 0 24px rgba(0, 230, 180, 0.18);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,230,180,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,230,180,0.025) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1.5rem, 5vw, 5rem);
+      height: 60px;
+      background: rgba(8, 11, 16, 0.85);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 0.9rem;
+      color: var(--accent);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+    }
+    .nav-logo span { color: var(--text-dim); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* LAYOUT */
+    main { position: relative; z-index: 1; }
+    section {
+      padding: clamp(5rem, 10vw, 8rem) clamp(1.5rem, 8vw, 10rem);
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .section-label::before {
+      content: '';
+      display: block;
+      width: 2rem;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    h2 {
+      font-family: var(--sans);
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      font-weight: 700;
+      color: var(--heading);
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    /* HERO */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: 80px;
+      max-width: 100%;
+      padding-left: clamp(1.5rem, 8vw, 10rem);
+      padding-right: clamp(1.5rem, 8vw, 10rem);
+    }
+    .hero-tag {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--accent);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.2s;
+    }
+    .hero-name {
+      font-size: clamp(3rem, 6.5vw, 6rem);
+      font-weight: 800;
+      color: var(--heading);
+      line-height: 1;
+      letter-spacing: -0.04em;
+      margin-bottom: 1.25rem;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.35s;
+    }
+    .hero-name .accent-dot { color: var(--accent); }
+    .hero-role {
+      font-family: var(--mono);
+      font-size: clamp(0.9rem, 1.8vw, 1.15rem);
+      color: var(--text-dim);
+      margin-bottom: 1.75rem;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.5s;
+    }
+    #typed-role {
+      color: var(--accent2);
+      border-right: 2px solid var(--accent2);
+      padding-right: 2px;
+      animation: blink 0.8s step-end infinite;
+    }
+    @keyframes blink { 50% { border-color: transparent; } }
+
+    .hero-tagline {
+      font-family: var(--mono);
+      font-size: 0.88rem;
+      color: var(--text-dim);
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.65s;
+      line-height: 1.9;
+    }
+    .hero-tagline .hl { color: var(--accent); font-weight: 600; }
+
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.8s;
+    }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius);
+      text-decoration: none;
+      transition: all 0.22s ease;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+      font-weight: 600;
+      border: 1px solid var(--accent);
+    }
+    .btn-primary:hover {
+      background: transparent;
+      color: var(--accent);
+      box-shadow: var(--glow);
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ABOUT */
+    #about { border-top: 1px solid var(--border); }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+      margin-top: 2.5rem;
+    }
+    .about-text p {
+      color: var(--text);
+      margin-bottom: 1rem;
+      font-size: 0.97rem;
+      line-height: 1.85;
+    }
+    .about-text .hl { color: var(--accent); font-weight: 600; }
+    .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .stat-box {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .stat-box:hover { border-color: var(--accent); box-shadow: var(--glow); }
+    .stat-number {
+      font-family: var(--mono);
+      font-size: 1.7rem;
+      font-weight: 600;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .stat-label { font-size: 0.78rem; color: var(--text-dim); margin-top: 0.4rem; }
+
+    /* EXPERIENCE */
+    #experience { border-top: 1px solid var(--border); }
+    .exp-list { margin-top: 2.5rem; display: flex; flex-direction: column; gap: 1.75rem; }
+    .exp-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem 2rem;
+      position: relative;
+      transition: border-color 0.2s;
+    }
+    .exp-card:hover { border-color: rgba(0,230,180,0.3); }
+    .exp-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(to bottom, var(--accent), var(--accent2));
+      border-radius: 3px 0 0 3px;
+    }
+    .exp-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.1rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .exp-role { font-size: 1.05rem; font-weight: 700; color: var(--heading); }
+    .exp-company { font-family: var(--mono); font-size: 0.82rem; color: var(--accent); margin-top: 0.2rem; }
+    .exp-meta { text-align: right; }
+    .exp-period { font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim); }
+    .exp-location { font-family: var(--mono); font-size: 0.7rem; color: var(--muted); margin-top: 0.15rem; }
+    .exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+    .exp-bullets li {
+      font-size: 0.9rem;
+      color: var(--text-dim);
+      padding-left: 1.2rem;
+      position: relative;
+      line-height: 1.7;
+    }
+    .exp-bullets li::before { content: '›'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+    .exp-bullets strong { color: var(--heading); font-weight: 600; }
+
+    /* SKILLS */
+    #skills { border-top: 1px solid var(--border); }
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 1rem;
+      margin-top: 2.5rem;
+    }
+    .skill-category {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .skill-category:hover { border-color: rgba(0,230,180,0.4); transform: translateY(-2px); }
+    .skill-cat-title {
+      font-family: var(--mono);
+      font-size: 0.66rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      margin-bottom: 0.85rem;
+    }
+    .skill-list { list-style: none; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .skill-tag {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0.2rem 0.5rem;
+    }
+
+    /* PROJECTS */
+    #projects { border-top: 1px solid var(--border); }
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.25rem;
+      margin-top: 2.5rem;
+    }
+    .project-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.22s, box-shadow 0.22s, transform 0.22s;
+      position: relative;
+      overflow: hidden;
+    }
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      opacity: 0;
+      transition: opacity 0.22s;
+    }
+    .project-card:hover { border-color: rgba(0,230,180,0.3); box-shadow: 0 8px 40px rgba(0,0,0,0.4); transform: translateY(-3px); }
+    .project-card:hover::before { opacity: 1; }
+    .project-type {
+      font-family: var(--mono);
+      font-size: 0.66rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      margin-bottom: 0.75rem;
+    }
+    .project-title { font-size: 1.08rem; font-weight: 700; color: var(--heading); margin-bottom: 0.75rem; }
+    .project-desc { font-size: 0.87rem; color: var(--text-dim); line-height: 1.75; flex: 1; margin-bottom: 1.25rem; }
+    .project-desc strong { color: var(--accent); }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.25rem; }
+    .project-tag {
+      font-family: var(--mono);
+      font-size: 0.66rem;
+      color: var(--accent2);
+      background: rgba(0,170,255,0.07);
+      border: 1px solid rgba(0,170,255,0.2);
+      border-radius: 3px;
+      padding: 0.15rem 0.5rem;
+    }
+    .project-links { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .project-link {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: color 0.2s;
+    }
+    .project-link:hover { color: var(--accent); }
+    .project-link svg { width: 12px; height: 12px; flex-shrink: 0; }
+
+    /* CONTACT */
+    #contact { border-top: 1px solid var(--border); text-align: center; }
+    #contact h2 { margin-bottom: 0.5rem; }
+    .contact-sub { color: var(--text-dim); margin-bottom: 2.5rem; font-size: 1rem; }
+    .contact-links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem clamp(1.5rem, 8vw, 10rem);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+    .footer-text { font-family: var(--mono); font-size: 0.72rem; color: var(--text-dim); }
+    .footer-text a { color: var(--accent); text-decoration: none; }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.55s ease, transform 0.55s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* RESPONSIVE */
+    @media (max-width: 700px) {
+      .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .about-stats { grid-template-columns: 1fr 1fr; }
+      .nav-links { display: none; }
+      footer { flex-direction: column; gap: 0.75rem; text-align: center; }
+      .exp-header { flex-direction: column; }
+      .exp-meta { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="nav-logo" href="#hero">joyan<span>.dev</span></a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <main>
+
+    <!-- HERO -->
+    <section id="hero">
+      <p class="hero-tag">// Berlin · Marketing & Data Analytics</p>
+      <h1 class="hero-name">Joyan Bhathena<span class="accent-dot">.</span></h1>
+      <p class="hero-role"><span id="typed-role"></span></p>
+      <div class="hero-tagline">
+        Data Analyst &nbsp;·&nbsp; Marketing &amp; Product Analytics &nbsp;·&nbsp; SQL &bull; Python &bull; BigQuery &bull; GA4<br>
+        <span class="hl">+26% CVR</span> &nbsp;·&nbsp; I fix leaky funnels with data.
+      </div>
+      <div class="hero-cta">
+        <a href="#projects" class="btn btn-primary">View Projects</a>
+        <a href="cv.pdf" download class="btn btn-ghost">Download CV ↓</a>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about">
+      <p class="section-label">About</p>
+      <h2>Who I am</h2>
+      <div class="about-grid reveal">
+        <div class="about-text">
+          <p>
+            I'm a marketing analyst and data nerd based in Berlin who lives at the intersection of 
+            tracking, analytics, and growth. I've spent 2+ years building end-to-end 
+            <span class="hl">GA4/GTM tracking setups</span>, running A/B tests that moved the needle 
+            (<span class="hl">+26% CVR lift</span>), and building dbt/BigQuery models that actually 
+            get used by stakeholders.
+          </p>
+          <p>
+            Currently open to Marketing Analyst and Data Analyst roles in Berlin where I can keep 
+            doing work that connects clean data to real business decisions.
+          </p>
+          <p>
+            Fun fact: I got introduced to the field of data via Sports Analytics, and the sports 
+            analytics project I created landed me my first job! Let's connect if you're looking for 
+            someone who speaks both data and business fluently.
+          </p>
+        </div>
+        <div class="about-stats">
+          <div class="stat-box">
+            <div class="stat-number">+26%</div>
+            <div class="stat-label">CVR lift delivered</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number">2+</div>
+            <div class="stat-label">Years consulting</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number">M.Sc.</div>
+            <div class="stat-label">Computer Science</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number">BER</div>
+            <div class="stat-label">Based in Berlin</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section id="experience">
+      <p class="section-label">Experience</p>
+      <h2>Work Experience</h2>
+      <div class="exp-list reveal">
+
+        <div class="exp-card">
+          <div class="exp-header">
+            <div>
+              <div class="exp-role">Working Student</div>
+              <div class="exp-company">AUTO1 Group</div>
+            </div>
+            <div class="exp-meta">
+              <div class="exp-period">Apr 2025 – Jan 2026</div>
+              <div class="exp-location">Berlin</div>
+            </div>
+          </div>
+          <ul class="exp-bullets">
+            <li>Owned automation projects within the People department; tracked 15+ initiatives using data analysis and AI tools.</li>
+          </ul>
+        </div>
+
+        <div class="exp-card">
+          <div class="exp-header">
+            <div>
+              <div class="exp-role">Data Analyst</div>
+              <div class="exp-company">DataVinci Analytics Consultancy</div>
+            </div>
+            <div class="exp-meta">
+              <div class="exp-period">Aug 2022 – Oct 2024</div>
+              <div class="exp-location">Remote</div>
+            </div>
+          </div>
+          <ul class="exp-bullets">
+            <li>Implemented GA4 event tracking via GTM for 3 retainer clients, defining measurement plans aligned with business logic to feed clean data into marketing reporting.</li>
+            <li>Grew an online ticketing client's checkout conversion rate from 1.79% to 2.25%, <strong>adding $11,000 in incremental monthly revenue</strong> — by running sequential A/B tests at each of five funnel stages using GA4 and Optimizely.</li>
+            <li>Built a customer LTV and cohort analysis dashboard in Looker Studio on BigQuery, joining ad spend, GA4, and CRM data; client reallocated budget from under-performing platforms and <strong>improved annual ROAS by 20%</strong>.</li>
+            <li>Built an automated monitoring system using GA4 and PageSpeed Insights API that caught a Google bot blacklisting mid-platform-migration — protecting organic traffic accounting for over 25% of the client's revenue.</li>
+            <li>Analyzed user survey data with Python and OpenAI API to inform a website redesign, resulting in a <strong>30% improvement in engagement rate</strong>.</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills">
+      <p class="section-label">Toolkit</p>
+      <h2>Skills & Tools</h2>
+      <div class="skills-grid reveal">
+
+        <div class="skill-category">
+          <div class="skill-cat-title">Data Querying & Transformation</div>
+          <ul class="skill-list">
+            <li class="skill-tag">SQL</li>
+            <li class="skill-tag">BigQuery</li>
+            <li class="skill-tag">dbt</li>
+            <li class="skill-tag">Python</li>
+          </ul>
+        </div>
+
+        <div class="skill-category">
+          <div class="skill-cat-title">Web Analytics</div>
+          <ul class="skill-list">
+            <li class="skill-tag">GA4</li>
+            <li class="skill-tag">GTM (client-side)</li>
+            <li class="skill-tag">GTM (server-side)</li>
+          </ul>
+        </div>
+
+        <div class="skill-category">
+          <div class="skill-cat-title">Visualisation</div>
+          <ul class="skill-list">
+            <li class="skill-tag">Looker Studio</li>
+            <li class="skill-tag">Matplotlib</li>
+            <li class="skill-tag">Seaborn</li>
+          </ul>
+        </div>
+
+        <div class="skill-category">
+          <div class="skill-cat-title">Analytical Methods</div>
+          <ul class="skill-list">
+            <li class="skill-tag">A/B Testing</li>
+            <li class="skill-tag">Funnel Analysis</li>
+            <li class="skill-tag">Anomaly Detection</li>
+            <li class="skill-tag">Cohort Analysis</li>
+          </ul>
+        </div>
+
+        <div class="skill-category">
+          <div class="skill-cat-title">Languages</div>
+          <ul class="skill-list">
+            <li class="skill-tag">English (fluent)</li>
+            <li class="skill-tag">German (B1 &amp; growing)</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects">
+      <p class="section-label">Projects</p>
+      <h2>Selected Projects</h2>
+      <div class="projects-grid reveal">
+
+        <div class="project-card">
+          <div class="project-type">// A/B Testing · E-commerce</div>
+          <div class="project-title">MöbelHaus Digital — A/B Test Analysis</div>
+          <div class="project-desc">
+            Analyzed a 4-week A/B test (187,974 sessions) for a Berlin furniture e-commerce site 
+            testing a redesigned product page. Uncovered that engagement wins masked a 
+            <strong>−15.7% revenue per session</strong> drop. Identified a salvageable 
+            mobile opportunity worth <strong>+€10K/month</strong>. Delivered full SQL analysis, 
+            statistical testing (chi-square, 99.9% confidence), and stakeholder memo.
+          </div>
+          <div class="project-tags">
+            <span class="project-tag">Python</span>
+            <span class="project-tag">DuckDB / SQL</span>
+            <span class="project-tag">Statistics</span>
+            <span class="project-tag">Pandas</span>
+            <span class="project-tag">Matplotlib</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/Joyan9/AB-Test-Analytics-Project" target="_blank" class="project-link">
+              <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+              GitHub
+            </a>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-type">// Root Cause Analysis · Operations</div>
+          <div class="project-title">Blinkit Delivery Time Crisis — RCA</div>
+          <div class="project-desc">
+            Investigated a simulated crisis at a quick-commerce platform: average delivery time surged 
+            from 9 to 14+ minutes. Worked across 3 datasets (109K orders, store load snapshots, 
+            external events) to identify the root cause using SQL, disproved competing executive 
+            hypotheses (COO, CMO, CTO), and delivered a strategic memo with intervention recommendations.
+          </div>
+          <div class="project-tags">
+            <span class="project-tag">SQL</span>
+            <span class="project-tag">Root Cause Analysis</span>
+            <span class="project-tag">Operations</span>
+            <span class="project-tag">Stakeholder Comms</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/Joyan9/Delivery-Time-Crisis-Analysis" target="_blank" class="project-link">
+              <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+              GitHub
+            </a>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-type">// Tutorial · GA4 · BigQuery</div>
+          <div class="project-title">GA4 Customer Retention Report — Tutorial</div>
+          <div class="project-desc">
+            End-to-end tutorial demonstrating cohort analysis and retention modelling using GA4 data, 
+            BigQuery, Google Sheets, and Looker Studio — to identify customer behaviour patterns and 
+            optimize retention strategies. Built for practitioners who want to go beyond the GA4 UI.
+          </div>
+          <div class="project-tags">
+            <span class="project-tag">GA4</span>
+            <span class="project-tag">BigQuery</span>
+            <span class="project-tag">Google Sheets</span>
+            <span class="project-tag">Looker Studio</span>
+            <span class="project-tag">Cohort Analysis</span>
+          </div>
+          <div class="project-links">
+            <a href="https://www.youtube.com/watch?v=YNQ88Ha6Td0" target="_blank" class="project-link">
+              <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8.051 1.999h.089c.822.003 4.987.033 6.11.335a2.01 2.01 0 0 1 1.415 1.42c.101.38.172.883.22 1.402l.01.104.022.26.008.104c.065.914.073 1.77.074 1.957v.075c-.001.194-.01 1.108-.082 2.06l-.008.105-.009.104c-.05.572-.124 1.14-.235 1.558a2.007 2.007 0 0 1-1.415 1.42c-1.16.312-5.569.334-6.18.335h-.142c-.309 0-1.587-.006-2.927-.052l-.17-.006-.087-.004-.171-.007-.171-.007c-1.11-.049-2.167-.128-2.654-.26a2.007 2.007 0 0 1-1.415-1.419c-.111-.417-.185-.986-.235-1.558L.09 9.82l-.008-.104A31.4 31.4 0 0 1 0 7.68v-.123c.002-.215.01-.958.064-1.778l.007-.103.003-.052.008-.104.022-.26.01-.104c.048-.519.119-1.023.22-1.402a2.007 2.007 0 0 1 1.415-1.42c.487-.13 1.544-.21 2.654-.26l.17-.007.172-.006.086-.003.171-.007A99.788 99.788 0 0 1 7.858 2h.193zM6.4 5.209v4.818l4.157-2.408L6.4 5.209z"/></svg>
+              YouTube
+            </a>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-type">// Data Engineering · Pipeline</div>
+          <div class="project-title">Farmer Queries Processing Pipeline — KCC</div>
+          <div class="project-desc">
+            Batch-processing pipeline handling ~9 million records from India's Kisan Call Centre 
+            (Open Government Data). Microservices architecture: dlt-based ingestion, PySpark 
+            transformation into a star schema, Jupyter dashboards, and a full unit + integration 
+            test suite — all orchestrated via Docker Compose.
+          </div>
+          <div class="project-tags">
+            <span class="project-tag">dlt</span>
+            <span class="project-tag">PySpark</span>
+            <span class="project-tag">DuckDB</span>
+            <span class="project-tag">Docker</span>
+            <span class="project-tag">Star Schema</span>
+            <span class="project-tag">Python</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/Joyan9/kcc-farmer-queries-pipeline" target="_blank" class="project-link">
+              <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+              GitHub
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact">
+      <p class="section-label">Contact</p>
+      <h2>Let's talk data</h2>
+      <p class="contact-sub reveal">Open to Marketing Analyst and Data Analyst roles in Berlin.</p>
+      <div class="contact-links reveal">
+        <a href="mailto:joyansbhathena@gmail.com" class="btn btn-primary">Email ↗</a>
+        <a href="https://www.linkedin.com/in/joyan-bhathena/" target="_blank" class="btn btn-ghost">LinkedIn</a>
+        <a href="https://github.com/Joyan9" target="_blank" class="btn btn-ghost">GitHub</a>
+        <a href="https://medium.com/@joyansbhathena" target="_blank" class="btn btn-ghost">Medium</a>
+        <a href="cv.pdf" download class="btn btn-ghost">Download CV ↓</a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span class="footer-text">© 2026 Joyan Bhathena · <a href="https://pages.github.com">GitHub Pages</a></span>
+    <span class="footer-text">Berlin, DE</span>
+  </footer>
+
+  <script>
+    const roles = ['Marketing Analyst', 'Data Analyst', 'Web Analyst', 'GA4 & BigQuery'];
+    let roleIdx = 0, charIdx = 0, deleting = false;
+    const el = document.getElementById('typed-role');
+
+    function type() {
+      const current = roles[roleIdx];
+      if (!deleting) {
+        el.textContent = current.slice(0, ++charIdx);
+        if (charIdx === current.length) { deleting = true; setTimeout(type, 1800); return; }
+      } else {
+        el.textContent = current.slice(0, --charIdx);
+        if (charIdx === 0) { deleting = false; roleIdx = (roleIdx + 1) % roles.length; }
+      }
+      setTimeout(type, deleting ? 45 : 80);
+    }
+    setTimeout(type, 1200);
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
